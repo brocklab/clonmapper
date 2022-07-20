@@ -1,0 +1,82 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Introduction # Insight into the clonal composition of a cells during key events – such as development, infection, tumor progression, or treatment response – is critical to understanding the nature of the interaction between the population of cells and the selective forces shaping it. While advances in genomics and transcriptomics and the advent of single-cell RNA sequencing (scRNA-seq) have vastly increased the resolution at which we can understand cellular processes, they lack the ability to directly assign clonal relationships."><meta name=theme-color content="#FFFFFF"><meta name=color-scheme content="light dark"><meta property="og:title" content><meta property="og:description" content="Introduction # Insight into the clonal composition of a cells during key events – such as development, infection, tumor progression, or treatment response – is critical to understanding the nature of the interaction between the population of cells and the selective forces shaping it. While advances in genomics and transcriptomics and the advent of single-cell RNA sequencing (scRNA-seq) have vastly increased the resolution at which we can understand cellular processes, they lack the ability to directly assign clonal relationships."><meta property="og:type" content="article"><meta property="og:url" content="https://brocklab.github.io/clonmapper/protocol/introduction/"><meta property="article:section" content="protocol"><title>Introduction | ClonMapper</title><link rel=manifest href=/clonmapper/manifest.json><link rel=icon href=/clonmapper/favicon.png type=image/x-icon><link rel=stylesheet href=/clonmapper/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous><script defer src=/clonmapper/sw.min.4d00984632245396ebd2739d1e65543e47a8eb498bb325f4968e66d86e92a473.js integrity="sha256-TQCYRjIkU5br0nOdHmVUPkeo60mLsyX0lo5m2G6SpHM=" crossorigin=anonymous></script></head><body dir=ltr><input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control><main class="container flex"><aside class=book-menu><div class=book-menu-content><nav><h2 class=book-brand><a class="flex align-center" href=/clonmapper/><span>ClonMapper</span></a></h2><ul><li class=book-section-flat><span>Protocol</span><ul><li><a href=/clonmapper/protocol/introduction/ class=active>Introduction</a></li><li><a href=/clonmapper/protocol/materials/>Materials</a></li><li><a href=/clonmapper/protocol/methods/>Methods</a></li><li><a href=/clonmapper/protocol/html-tables/>Tables</a></li><li><a href=/clonmapper/protocol/acknowledgements/>Acknowledgements</a></li></ul></li><li><a href=/clonmapper/single-page-protocol/>Single Page Protocol</a></li><li><a href=/clonmapper/pdfs/>PDF</a></li><li><a href=/clonmapper/citation/>Citation</a></li></ul><ul><li><a href=https://github.com/brocklab/pycashier target=_blank rel=noopener>Pycashier</a></li><li><a href=https://brocklab.com target=_blank rel=noopener>Lab Website</a></li><li><a href=https://github.com/brocklab target=_blank rel=noopener>Lab Github</a></li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script></div></aside><div class=book-page><header class=book-header><div class="flex align-center justify-between"><label for=menu-control><img src=/clonmapper/svg/menu.svg class=book-icon alt=Menu></label>
+<strong>Introduction</strong>
+<label for=toc-control></label></div></header><article class=markdown><h1 id=introduction>Introduction
+<a class=anchor href=#introduction>#</a></h1><p>Insight into the clonal composition of a cells during key events – such
+as development, infection, tumor progression, or treatment response – is
+critical to understanding the nature of the interaction between the
+population of cells and the selective forces shaping it. While advances
+in genomics and transcriptomics and the advent of single-cell RNA
+sequencing (scRNA-seq) have vastly increased the resolution at which we
+can understand cellular processes, they lack the ability to directly
+assign clonal relationships. To meet this need, lineage tracing
+technologies, such as DNA barcoding, have been developed to label and
+track individual cells and their progeny (1, 2). In DNA barcoding, each
+individual cell in a population is labeled with a unique random string
+of nucleotides that is integrated into the genome and heritable by its
+daughter cells. The ensemble of all DNA barcodes in the cell population
+can be quantified by next-generation sequencing (NGS) to determine how
+clonal abundance changes over time.</p><p>While highly informative, DNA barcoding and other lineage tracing
+techniques are still limited in that interesting lineages of cells
+cannot be easily isolated from the bulk population for clonally pure
+analysis. Here, we describe a detailed protocol for the Control of
+Lineages by Barcode Enabled Recombinant Transcription (COLBERT), a
+workflow that enables precise identification and isolation of
+populations of interest from heterogeneous mammalian cells (3). An
+overview of COLBERT is shown in <strong>Fig. 1</strong>. COLBERT is a functionalized
+variant of DNA barcoding in which the DNA barcode is a CRISPR-Cas9
+compatible single-guide RNA (sgRNA). The sgRNA-barcode has multiple
+functionalities: (1) It is an integrated DNA barcode, (2) It is
+transcribed and captured in scRNA-seq workflows, and (3) It can be used
+to actuate lineage-specific genes of interest using an activator variant
+of Cas9 (4). This protocol describes the use of COLBERT for
+lineage-specific activation of GFP, enabling isolation of clonal cells
+from a heterogeneous population.</p><p>This protocol describes two variants of the COLBERT system, one
+compatible with single-cell RNA sequencing workflows that use polyA
+capture and another with specific compatibility with 10X Genomics
+systems. In the polyA capture version, the sgRNA barcode is engineered
+using the CROPseq method (5) such that the sgRNA barcode is transcribed
+by both RNA polymerase III and RNA polymerase II, creating a functional
+sgRNA barcode transcript and a polyadenylated transcript containing the
+barcode, respectively. In the 10X Genomics version, the sgRNA is
+engineered to contain a capture sequence that allows targeted capture by
+the Chromium Single Cell 3’ v3 Gel Beads (6).</p><p>Cells are first transduced with lentivirus containing either the CROPseq
+sgRNA barcoding vector or the 10X Capture sgRNA barcoding vector at a
+low multiplicity of infection (MOI) to minimize the integration of
+multiple barcodes per cell. In both versions of the vector, the sgRNA
+barcode is co-expressed with blue fluorescent protein (BFP) for easy
+identification and collection of barcoded cells via flow cytometry and
+fluorescence-activated cell sorting (FACS). Once established, the
+barcoded cell population is available for experimental manipulation.
+Clonal dynamics may be measured by NGS analysis and gene expression
+signatures of clonal populations may be resolved by scRNA-Seq. Once a
+barcode of interest is identified from NGS or scRNA-seq, the barcode
+identifier can be exploited for isolation of the clone. This is achieved
+by transfecting the cell population with a plasmid containing an
+activator variant of Cas9 (dCas9-VPR) and a second plasmid containing
+the Cas9-homing PAM sites adjacent to the identified barcode upstream of
+green fluorescent protein (sfGFP) reporter. Expression of sfGFP will
+occur only in cells that are producing the matching sgRNA barcode,
+allowing precise identification and FACS isolation of cells from
+lineages of interest.</p><div id=refs class="references csl-bib-body"><div id=ref-blundell2014 class=csl-entry><p><span class=csl-left-margin>1. </span><span class=csl-right-inline>J. R. Blundell, S. F. Levy,
+<a href=https://doi.org/10.1016/j.ygeno.2014.09.005>Beyond genome
+sequencing: Lineage tracking with barcodes to study the dynamics of
+evolution, infection, and
+cancer</a>. <em>Genomics</em>
+<strong>104</strong>, 417–430 (2014).</span></p></div><div id=ref-kebschull2018 class=csl-entry><p><span class=csl-left-margin>2. </span><span class=csl-right-inline>J. M. Kebschull, A. M. Zador,
+<a href=https://doi.org/10.1038/s41592-018-0185-x>Cellular
+barcoding: Lineage tracing, screening and
+beyond</a>. <em>Nature Methods</em>
+<strong>15</strong>, 871–879 (2018).</span></p></div><div id=ref-alkhafaji2018 class=csl-entry><p><span class=csl-left-margin>3. </span><span class=csl-right-inline>A. M. Al’Khafaji, D. Deatherage, A. Brock,
+<a href=https://doi.org/10.1021/acssynbio.8b00105>Control of Lineage-Specific Gene Expression by <span class=nocase>Functionalized gRNA
+Barcodes</span></a>. <em>ACS
+Synthetic Biology</em> <strong>7</strong>, 2468–2474 (2018).</span></p></div><div id=ref-chavez2015 class=csl-entry><p><span class=csl-left-margin>4. </span><span class=csl-right-inline>A. Chavez, <em>et al.</em>,
+<a href=https://doi.org/10.1038/nmeth.3312>Highly efficient <span class=nocase>Cas9-mediated</span> transcriptional
+programming</a>. <em>Nature Methods</em>
+<strong>12</strong>, 326–328 (2015).</span></p></div><div id=ref-datlinger2017 class=csl-entry><p><span class=csl-left-margin>5. </span><span class=csl-right-inline>P. Datlinger, <em>et al.</em>,
+<a href=https://doi.org/10.1038/nmeth.4177>Pooled CRISPR
+screening with single-cell transcriptome
+readout</a>. <em>Nature Methods</em> <strong>14</strong>,
+297–301 (2017).</span></p></div><div id=ref-10xgenomics class=csl-entry><p><span class=csl-left-margin>6. </span><span class=csl-right-inline>10xGenomics, “Guide RNA Specifications
+Compatible with Feature Barcoding technology for CRISPR screening. 10x
+Genomics.”</span></p></div></div></article><footer class=book-footer><div class="flex flex-wrap justify-between"></div><script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script></footer><label for=menu-control class="hidden book-menu-overlay"></label></div></main></body></html>
