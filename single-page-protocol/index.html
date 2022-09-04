@@ -1,0 +1,466 @@
+<!doctype html><html lang=en dir=ltr><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Introduction # Insight into the clonal composition of a cells during key events – such as development, infection, tumor progression, or treatment response – is critical to understanding the nature of the interaction between the population of cells and the selective forces shaping it. While advances in genomics and transcriptomics and the advent of single-cell RNA sequencing (scRNA-seq) have vastly increased the resolution at which we can understand cellular processes, they lack the ability to directly assign clonal relationships."><meta name=theme-color content="#FFFFFF"><meta name=color-scheme content="light dark"><meta property="og:title" content="Single Page Protocol"><meta property="og:description" content="Introduction # Insight into the clonal composition of a cells during key events – such as development, infection, tumor progression, or treatment response – is critical to understanding the nature of the interaction between the population of cells and the selective forces shaping it. While advances in genomics and transcriptomics and the advent of single-cell RNA sequencing (scRNA-seq) have vastly increased the resolution at which we can understand cellular processes, they lack the ability to directly assign clonal relationships."><meta property="og:type" content="article"><meta property="og:url" content="https://brocklab.github.io/clonmapper/single-page-protocol/"><meta property="article:section" content><title>Single Page Protocol | ClonMapper</title><link rel=manifest href=/clonmapper/manifest.json><link rel=icon href=/clonmapper/favicon.png type=image/x-icon><link rel=stylesheet href=/clonmapper/book.min.82c5dbd23447cee0b4c2aa3ed08ce0961faa40e1fa370eee4f8c9f02e0d46b5f.css integrity="sha256-gsXb0jRHzuC0wqo+0Izglh+qQOH6Nw7uT4yfAuDUa18=" crossorigin=anonymous><script defer src=/clonmapper/sw.min.4d00984632245396ebd2739d1e65543e47a8eb498bb325f4968e66d86e92a473.js integrity="sha256-TQCYRjIkU5br0nOdHmVUPkeo60mLsyX0lo5m2G6SpHM=" crossorigin=anonymous></script>
+<script>MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]}}</script><script id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js></script></head><body dir=ltr><input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control><main class="container flex"><aside class=book-menu><div class=book-menu-content><nav><h2 class=book-brand><a class="flex align-center" href=/clonmapper/><span>ClonMapper</span></a></h2><ul><li class=book-section-flat><span>Protocol</span><ul><li><a href=/clonmapper/protocol/introduction/>Introduction</a></li><li><a href=/clonmapper/protocol/materials/>Materials</a></li><li><a href=/clonmapper/protocol/methods/>Methods</a></li><li><a href=/clonmapper/protocol/html-tables/>Tables</a></li><li><a href=/clonmapper/protocol/acknowledgements/>Acknowledgements</a></li></ul></li><li><a href=/clonmapper/single-page-protocol/ class=active>Single Page Protocol</a></li><li><a href=/clonmapper/pdfs/>PDF</a><ul></ul></li><li><a href=/clonmapper/citation/>Citation</a></li></ul><ul><li><a href=https://github.com/brocklab/pycashier target=_blank rel=noopener>Pycashier</a></li><li><a href=https://brocklab.com target=_blank rel=noopener>Lab Website</a></li><li><a href=https://github.com/brocklab target=_blank rel=noopener>Lab Github</a></li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script></div></aside><div class=book-page><header class=book-header><div class="flex align-center justify-between"><label for=menu-control><img src=/clonmapper/svg/menu.svg class=book-icon alt=Menu></label>
+<strong>Single Page Protocol</strong>
+<label for=toc-control><img src=/clonmapper/svg/toc.svg class=book-icon alt="Table of Contents"></label></div><aside class="hidden clearfix"><nav id=TableOfContents><ul><li><a href=#introduction>Introduction</a></li><li><a href=#materials>Materials</a></li><li><a href=#methods>Methods</a><ul><li><a href=#sgrna-barcode-library-plasmid-pool-assembly>sgRNA Barcode Library Plasmid Pool Assembly</a></li><li><a href=#sgrna-barcode-sampling>sgRNA Barcode Sampling</a></li><li><a href=#sgrna-barcoding-lentivirus-production>SgRNA Barcoding Lentivirus Production</a></li><li><a href=#determine-sgrna-viral-titer>Determine sgRNA Viral Titer</a><ul><li><a href=#titering-on-adherent-cells-forward-procedure>Titering on Adherent Cells (Forward Procedure)</a></li><li><a href=#titering-on-suspension-cells>Titering on Suspension Cells</a></li><li><a href=#flow-cytometry-to-determine-viral-titer>Flow Cytometry to Determine Viral Titer</a></li></ul></li><li><a href=#sgrna-barcode-transduction>sgRNA Barcode Transduction</a></li><li><a href=#targeted-sgrna-barcode-sampling-of-cells>Targeted sgRNA Barcode Sampling of Cells</a><ul><li><a href=#preparing-samples-for-sequencing>Preparing Samples for Sequencing</a></li><li><a href=#processing-barcode-sequencing-data-wip>Processing Barcode Sequencing Data (<em>WIP!</em>)</a></li></ul></li><li><a href=#recall-plasmid-assembly>Recall Plasmid Assembly</a></li><li><a href=#recall-and-isolation-of-barcoded-lineages>Recall and Isolation of Barcoded Lineages</a></li><li><a href=#10x-capture-variation>10X Capture Variation</a></li></ul></li><li><a href=#acknowledgements>Acknowledgements</a></li></ul></nav></aside></header><article class=markdown><h1 id=introduction>Introduction
+<a class=anchor href=#introduction>#</a></h1><p>Insight into the clonal composition of a cells during key events – such
+as development, infection, tumor progression, or treatment response – is
+critical to understanding the nature of the interaction between the
+population of cells and the selective forces shaping it. While advances
+in genomics and transcriptomics and the advent of single-cell RNA
+sequencing (scRNA-seq) have vastly increased the resolution at which we
+can understand cellular processes, they lack the ability to directly
+assign clonal relationships. To meet this need, lineage tracing
+technologies, such as DNA barcoding, have been developed to label and
+track individual cells and their progeny (1, 2). In DNA barcoding, each
+individual cell in a population is labeled with a unique random string
+of nucleotides that is integrated into the genome and heritable by its
+daughter cells. The ensemble of all DNA barcodes in the cell population
+can be quantified by next-generation sequencing (NGS) to determine how
+clonal abundance changes over time.</p><p>While highly informative, DNA barcoding and other lineage tracing
+techniques are still limited in that interesting lineages of cells
+cannot be easily isolated from the bulk population for clonally pure
+analysis. Here, we describe a detailed protocol for <strong>ClonMapper</strong>, a
+workflow that enables precise identification and isolation of
+populations of interest from heterogeneous mammalian cells (3). COLBERT
+is a functionalized variant of DNA barcoding in which the DNA barcode is
+a CRISPR-Cas9 compatible single-guide RNA (sgRNA). The sgRNA-barcode has
+multiple functionalities: (1) It is an integrated DNA barcode, (2) It is
+transcribed and captured in scRNA-seq workflows, and (3) It can be used
+to actuate lineage-specific genes of interest using an activator variant
+of Cas9 (4). This protocol describes the use of ClonMapper for
+lineage-specific activation of GFP, enabling isolation of clonal cells
+from a heterogeneous population.</p><p>The sgRNA barcode is engineered using the CROPseq method (5) such that
+the sgRNA barcode is transcribed by both RNA polymerase III and RNA
+polymerase II, creating a functional sgRNA barcode transcript and a
+polyadenylated transcript containing the barcode, respectively. There
+are also instructions for a 10X Genomics version, in which the sgRNA is
+engineered to contain a capture sequence that allows targeted capture by
+the Chromium Single Cell 3’ v3 Gel Beads (6).</p><p>Cells are first transduced with lentivirus containing either the CROPseq
+sgRNA barcoding vector or the 10X Capture sgRNA barcoding vector at a
+low multiplicity of infection (MOI) to minimize the integration of
+multiple barcodes per cell. In both versions of the vector, the sgRNA
+barcode is co-expressed with blue fluorescent protein (BFP) for easy
+identification and collection of barcoded cells via flow cytometry and
+fluorescence-activated cell sorting (FACS). Once established, the
+barcoded cell population is available for experimental manipulation.
+Clonal dynamics may be measured by NGS analysis and gene expression
+signatures of clonal populations may be resolved by scRNA-seq. Once a
+barcode of interest is identified from NGS or scRNA-seq, the barcode
+identifier can be exploited for isolation of the clone. This is achieved
+by transfecting the cell population with a plasmid containing an
+activator variant of Cas9 (dCas9-VPR) and a second plasmid containing
+the Cas9-homing PAM sites adjacent to the identified barcode upstream of
+green fluorescent protein (sfGFP) reporter. Expression of sfGFP will
+occur only in cells that are producing the matching sgRNA barcode,
+allowing precise identification and FACS isolation of cells from
+lineages of interest.</p><h1 id=materials>Materials
+<a class=anchor href=#materials>#</a></h1><p>Equipment</p><ol><li>Electroporator</li><li>Mammalian cell incubator</li><li>Bacterial cell incubator with shaking</li><li>Thermocycler</li><li>Gel electrophoresis box</li><li>Bioanalyzer</li><li>Illumina sequencer</li><li>Flow cytometer with filters for BFP (Ex: 380/20, Em: 460/40)</li></ol><p>Disposables</p><ol><li>Sterile filtered pipette tips</li><li>1.5 mL microcentrifuge tubes (sterile)</li><li>1.8 mL Screw top cryovials (sterile)</li><li>20 mL Luer-tapered syringe (sterile)</li><li>0.45 $\mu$m polyethersulfone (PES) syringe filter</li><li>30,000 molecular weight cutoff (MWCO) PES concentrator capable of
+processing 20 mL</li></ol><p>Biologics</p><ol><li>Electrocompetent <em>e. coli</em> suitable for unstable DNA (restriction
+minus, endonuclease deficient, and recombination deficient)</li><li>Cells of interest <sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup></li></ol><p>Plasmids</p><ol><li>CROPseq gRNA expression transfer vector,
+Cropseq-BFP-WPRE-TS-hU6-BsmbI {Addgene # 137993 / Brock Lab AA112}</li><li>10X Capture gRNA expression transfer vector,
+pLKV2-hU6-BbsI-PGK-Puro-TagBFP-WPRE {Addgene # 137994 / Brock Lab
+AA174}</li><li>Lentiviral packaging plasmid, VSV-G (Addgene #14888)</li><li>Lentiviral packaging plasmid, psPAX2 (Addgene #12260)</li><li>dCas9-VPR (Addgene #63798)</li><li>Recall-miniCMV-sfGFP (Addgene #137995 / Brock Lab #AA158)</li></ol><p>Primers</p><p>(<em>see</em> <strong>Table 1</strong>)</p><p>Buffers</p><ol><li>Buffer 3.1: 100 mM NaCl , 50 mM Tris-HCl, 10 mM MgCl<sub>2</sub>,
+100 $\mu$g/ml BSA , pH 7.9 at 25°C</li><li>NEB 5X Q5 Reaction Buffer</li><li>10X T4 PNK Buffer</li><li>10 mM dNTPs</li><li>1X Tris-acetate-EDTA (TAE)</li><li>FACS Buffer: 5% FBS, 1-5 mM EDTA, 95% Phosphate-Buffered Saline</li></ol><p>Enzymes</p><ol><li>BsmBI (10,000 U/mL)</li><li>BbsI (10,000 U/mL)</li><li>NEB Q5 polymerase</li><li>T4 ligase (400,000 U/mL )</li><li>T7 ligase (3,000,000 U/mL)</li><li>PNK (10,000 U/mL)</li></ol><p>Other Reagents</p><ol><li>Lipofectamine<sup>TM</sup> 2000</li><li>Lipofectamine<sup>TM</sup> 3000</li><li>Nuclease-free water</li><li>Agarose</li><li>DNA Clean and Concentrator kit</li><li>2xYT microbial growth medium</li><li>Dulbecco’s Modified Eagle Medium (DMEM)</li><li>OptiMEM<sup>TM</sup> reduced serum medium</li><li>Fetal Bovine Serum (FBS)</li><li>Carbenicillin</li><li>Solid Phase Reversible Immobilization (SPRI) paramagnetic beads for
+PCR cleanup</li><li>70% molecular biology grade ethanol in nuclease-free water</li><li>10 mg/mL hexadimethrine bromide</li><li>0.05% Trypan blue</li><li>Plasmid Midi-Prep Kit</li><li>DNA gel purification kit</li></ol><p>Computational</p><ol><li>Linux Machine</li><li>Python 3.8</li><li>Cell Ranger (for 10X analysis)</li><li><a href=https://github.com/brocklab/pycashier>Pycashier</a></li></ol><h1 id=methods>Methods
+<a class=anchor href=#methods>#</a></h1><h2 id=sgrna-barcode-library-plasmid-pool-assembly>sgRNA Barcode Library Plasmid Pool Assembly
+<a class=anchor href=#sgrna-barcode-library-plasmid-pool-assembly>#</a></h2><ol><li>Perform an extension reaction to generate double-stranded insert
+gRNA barcode DNA. Mix 10 $\mu$L NEB 5X Q5 Reaction Buffer, 1 $\mu$L
+of 10 mM dNTPs, 2 $\mu$L 100$\mu$M CROPseq-PrimeF-BgL-BsmBI, 1
+$\mu$L 100$\mu$M CROPseq-RevExt-BgL-BsmBI , and 0.5 $\mu$L to create
+a 50 $\mu$L reaction.<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup> See
+<a href=/clonmapper/#10X>10X-3.1.1</a> for 10X vector
+variation.</li></ol><ol start=2><li><p>Run the extension reaction on a thermocycler using the following
+settings: (1) 98 °C for 2 min, (2) 65 °C for 30 sec, (3) 72 °C for
+10 sec, (4) Repeat steps 2-3 for 10 cycles, (5) 72 °C for 1 min, (6)
+4 °C hold</p></li><li><p>Confirm dsDNA assembly on 2% agarose gel by running single stranded
+DNA against PCR product.</p></li><li><p>Digest 5-10 $\mu$g of CROPseq vector backbone in a reaction
+containing 20 $\mu$L Digestion Buffer 3.1, 8 $\mu$L BsmBI, and
+nuclease-fee water to 200 $\mu$L. See
+<a href=/clonmapper/#10X>10X-3.1.4</a> for 10X
+vector variation.</p></li><li><p>Run the digested backbone on a 1-1.5% low melting point agarose gel,
+then follow the instructions on a DNA gel purification kit to
+extract and purify the linearized plasmid band.</p></li><li><p>Ligate double stranded gRNA barcode DNA into linearized gRNA
+transfer vector at a molar ratio of 10:1 in a 50X Golden Gate
+assembly reaction by mixing 1.25 pmol digested gRNA transfer vector
+(<em>from step 3.1.4</em>), 12.5 pmol double stranded gRNA barcode DNA
+(<em>from step 3.1.1</em>), 50 $\mu$L T4 ligase buffer, 25 $\mu$L T7
+ligase, 25 $\mu$L BsmBI (CROPseq) or BbsI (10X Capture), and
+nuclease-free water to 500 $\mu$L.<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup></p></li></ol><ol start=7><li><p>Run the Golden Gate assembly reaction on a thermocycler overnight
+using the following settings: (1) 42 °C for 2 min, (2) 16 °C for 5
+min, (3) Repeat steps 1-2 for 99 cycles, (4) 55 °C for 30 min, (6) 4
+°C hold</p></li><li><p>Clean barcoding library plasmid pool using a DNA clean and
+concentrator kit and elute in 22 $\mu$L warm, nuclease-free
+water.<sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup></p></li></ol><ol start=9><li>Prepare for <em>e. coli</em> electroporation by pre-warming recovery media
+to room temperature, thawing electrocompetent <em>e. coli</em> on ice, and
+pre-chilling 2 mm electroporation cuvettes on ice.<sup id=fnref:5><a href=#fn:5 class=footnote-ref role=doc-noteref>5</a></sup></li></ol><ol start=10><li>Aliquot 100 $\mu$L of E.coli into the chilled 0.2 cm electroporation
+cuvette, add 5 $\mu$L of purified assembled plasmid, and stir with
+pipet tip.<sup id=fnref:6><a href=#fn:6 class=footnote-ref role=doc-noteref>6</a></sup></li></ol><ol start=11><li>Transform e. coli by electroporating with 1 pulse at 2.5 kV.<sup id=fnref:7><a href=#fn:7 class=footnote-ref role=doc-noteref>7</a></sup></li></ol><ol start=12><li><p>Add 2 mL Recovery Media and gently pipet up and down immediately
+after electroporation, and transfer to a sterile 50ml conical tube.</p></li><li><p>Repeat steps 10-12 three times</p></li><li><p>Allow cells to recover for 30 min at 37 °C with shaking at 250 rpm.</p></li><li><p>Pre-warm 2xYT agar plates with 100 $\mu$g/mL carbenicillin.</p></li><li><p>After recovery, perform dilution plating 1:10<sup>4</sup>,
+1:10<sup>5</sup>, 1:10<sup>6</sup> on carbenicillin agar plates.</p></li><li><p>Incubate plates overnight at 37 °C.</p></li><li><p>Put the remaining transformant mixture into 500 mL 2xYT with 100
+$\mu$g/mL carbenicillin in a 2 L flasks.</p></li><li><p>Incubate flasks at 30 °C overnight with shaking at 250 rpm.</p></li><li><p>The culture can be pelleted or midi/maxi prepped for usage.</p></li><li><p>Calculate transformation efficiency from dilution plating.<sup id=fnref:8><a href=#fn:8 class=footnote-ref role=doc-noteref>8</a></sup></p></li></ol><h2 id=sgrna-barcode-sampling>sgRNA Barcode Sampling
+<a class=anchor href=#sgrna-barcode-sampling>#</a></h2><p>The diversity of the initial plasmid pool should be assessed to ensure a
+high diversity library. To do this, PCR is performed with primers
+containing Illumina indices that anneal to regions flanking the
+barcodes.</p><ol><li><p>Midi-prep one tube of transformed e. coli from step 3.1.1 according
+to manufacturer’s instructions.</p></li><li><p>Create the phasing primer mixture ‘PrimeF-PAS’ by mixing equimolar
+amounts of UniF PASx0 1 stage, UniF PASx1 1 stage, UniF PASx2 1
+stage, UniF PASx3 1 stage, UniF PASx4 1 stage, UniF PASx6 1 stage
+(<em>see</em> <strong>Table 1</strong>).<sup id=fnref:9><a href=#fn:9 class=footnote-ref role=doc-noteref>9</a></sup></p></li></ol><ol start=3><li>Prepare the PCR reaction to amplify barcodes and add Illumina
+indices by mixing 10 uL 5X Q5 Reaction Buffer, 1 $\mu$L 10 mM dNTPs,
+2.5 $\mu$L PrimeF-PAS (from step 3.2.2), 2.5 $\mu$L PrimeR_cropseq
+(<em>see</em> <strong>Table 1</strong>), 0.5 $\mu$L Q5 polymerase, 50 ng plasmid DNA,
+and nuclease-free water to 50 $\mu$L. <sup id=fnref:10><a href=#fn:10 class=footnote-ref role=doc-noteref>10</a></sup> See
+<a href=/clonmapper/#10X>10X-3.2.3</a>
+for 10X vector variation.</li></ol><ol start=4><li>Amplify the barcodes by running the 50 $\mu$L reaction on a
+thermocycler using the following settings<sup id=fnref:11><a href=#fn:11 class=footnote-ref role=doc-noteref>11</a></sup>: (1) 98 °C for 2
+min, (2) 98 °C for 10 sec, (3) 63 °C for 30 sec, (4) 72 °C for 15
+sec, (4) Repeat steps 2-4 for 7 cycles<sup id=fnref:12><a href=#fn:12 class=footnote-ref role=doc-noteref>12</a></sup>, (5) 72 °C for 2
+min, (6) 4 °C hold</li></ol><ol start=5><li><p>Transfer 50 $\mu$L PCR amplification product to a nuclease-free
+microcentrifuge tube</p></li><li><p>Allow SPRI beads to come to room temperature.</p></li><li><p>Add 80 $\mu$L (1.6X) paramagnetic SPRI beads and mix well with
+vortexing or pipetting up and down 10 times.</p></li><li><p>Incubate at room temperature for 5 minutes.</p></li><li><p>Place the tube on a magnetic rack and allow solution to clear (5-10
+minutes).</p></li><li><p>Remove supernatant.</p></li><li><p>Remove tube from magnetic rack and wash beads with 200 $\mu$L of
+freshly prepared 80% ethanol.</p></li><li><p>Return the tube to magnetic rack and allow the solution to clear
+(5-10 minutes).</p></li><li><p>Remove supernatant, repeat wash step, and remove supernatant.</p></li><li><p>Allow the pelleted beads to dry until they have obtained a matte
+finish and minimal cracking in the bead pellet.<sup id=fnref:13><a href=#fn:13 class=footnote-ref role=doc-noteref>13</a></sup></p></li></ol><ol start=15><li><p>Remove tube from the magnetic rack and elute DNA by adding 42 $\mu$L
+of nuclease-free water.</p></li><li><p>Incubate at room temperature for 10 minutes.</p></li><li><p>Transfer tube to magnetic rack and collect 40 $\mu$L of purified PCR
+product after solution has cleared (5-10 minutes).<sup id=fnref:14><a href=#fn:14 class=footnote-ref role=doc-noteref>14</a></sup></p></li></ol><ol start=18><li><p>Quantify DNA yield with a high sensitivity fluorometry kit ensuring
+yield between 1-10 ng/$\mu$L.</p></li><li><p>Load sample on to BioAnalyzer chip according to the manufacturer’s
+protocol and ensure a clear peak around 225 bp.<sup id=fnref:15><a href=#fn:15 class=footnote-ref role=doc-noteref>15</a></sup></p></li></ol><ol start=20><li><p>Submit sample for Illumina sequencing.</p></li><li><p>See 3.7.2 for processing barcode sequence data.</p></li></ol><h2 id=sgrna-barcoding-lentivirus-production>SgRNA Barcoding Lentivirus Production
+<a class=anchor href=#sgrna-barcoding-lentivirus-production>#</a></h2><ol><li><p>48 hours before transfection, plate 0.22-0.25 x 10<sup>6</sup>
+low-passage HEK-293T cells in DMEM supplemented with 10% FBS
+<strong>without antibiotics</strong> in each well of a sterile 6-well tissue
+culture treated plate such that cells will be 70-80% confluent at
+the time of transfection.</p></li><li><p>On the morning of transfection, replace media on HEK-293T cells with
+2 mL of fresh Opti-MEM<sup>TM</sup> (or your cells growth medium)
+supplemented with 10% FBS <strong>without antibiotics</strong>.</p></li><li><p>In the afternoon, warm Opti-MEM<sup>TM</sup>,
+Lipofectamine<sup>TM</sup> 2000, and VSV-G, psPAX, and sgRNA
+barcoding plasmid to room temperature.<sup id=fnref:16><a href=#fn:16 class=footnote-ref role=doc-noteref>16</a></sup><sup id=fnref:17><a href=#fn:17 class=footnote-ref role=doc-noteref>17</a></sup></p></li></ol><ol start=4><li>Per well of a 6 well plate, prepare “Tube A” containing 150 $\mu$L
+Opti-MEM<sup>TM</sup> and 9 $\mu$L Lipofectamine<sup>TM</sup>
+2000.<sup id=fnref:18><a href=#fn:18 class=footnote-ref role=doc-noteref>18</a></sup></li></ol><ol start=5><li><p>Incubate “Tube A” at room temperature for 5 minutes.</p></li><li><p>Per well of a 6 well plate, prepare “Tube B” containing 150 $\mu$L
+Opti-MEM<sup>TM</sup>,1.5 $\mu$g psPax, 0.4 $\mu$g VSV-G, 3-5 $\mu$g
+sgRNA barcoding plasmid.</p></li><li><p>Slowly add “Tube B” dropwise to “Tube A” and carefully mix by gently
+inverting 10 times</p></li><li><p>Incubate at room temperature for 20 minutes.</p></li><li><p>Add 300 $\mu$L of the transfection mix slowly and dropwise to each
+well of HEK-293T cells.</p></li><li><p>16-18 hours post-transfection, carefully remove and dipose of media
+containing Lipofectamine<sup>TM</sup> 2000 complexes and slowly
+replenish with DMEM supplemented with 20% FBS <strong>without
+antibiotics</strong>.<sup id=fnref:19><a href=#fn:19 class=footnote-ref role=doc-noteref>19</a></sup><sup id=fnref:20><a href=#fn:20 class=footnote-ref role=doc-noteref>20</a></sup></p></li></ol><ol start=11><li>48 hours post-transfection, harvest viral containing supernatant and
+store in a 50 mL conical tube at 4 °C. Optional: To increase viral
+harvest,replenish media dropwise on virus producing cells for next
+day collection. <sup id=fnref:21><a href=#fn:21 class=footnote-ref role=doc-noteref>21</a></sup></li></ol><ol start=12><li>Optional: 72 hours post-transfection, harvest final viral containing
+supernatant and combine with 48 hour viral collection.<sup id=fnref:22><a href=#fn:22 class=footnote-ref role=doc-noteref>22</a></sup><sup id=fnref:23><a href=#fn:23 class=footnote-ref role=doc-noteref>23</a></sup></li></ol><ol start=13><li><p>Spin down collected viral containing supernatant at 500 x g for 10
+min at 4 °C to remove residual HEK-293T cells.</p></li><li><p>Remove plunger from 20 mL syringe and attach to a 0.45 $\mu$m PES
+syringe filter.</p></li><li><p>Transfer viral supernatant to the 20 mL syringe.</p></li><li><p>Filter viral supernatant through 0.45 $\mu$m PES syringe filter into
+a fresh 50 mL conical tube to remove any remaining cell debris.</p></li><li><p>Concentrate virus ~20X in 30,000 MWCO PES ultrafiltration
+centrifugal concentrator by loading 20 mL of filtered viral
+supernatant into concentrator chamber and spinning at 4000 x g for
+60-75 minutes at 4 °C until ~1 mL of media remains in filter.<sup id=fnref:24><a href=#fn:24 class=footnote-ref role=doc-noteref>24</a></sup></p></li></ol><ol start=18><li>Aliquot 25-50 $\mu$L of concentrated virus in threaded cryovials and
+store at -80 °C.<sup id=fnref:25><a href=#fn:25 class=footnote-ref role=doc-noteref>25</a></sup><sup id=fnref:26><a href=#fn:26 class=footnote-ref role=doc-noteref>26</a></sup></li></ol><h2 id=determine-sgrna-viral-titer>Determine sgRNA Viral Titer
+<a class=anchor href=#determine-sgrna-viral-titer>#</a></h2><p><sup id=fnref:27><a href=#fn:27 class=footnote-ref role=doc-noteref>27</a></sup><sup id=fnref:28><a href=#fn:28 class=footnote-ref role=doc-noteref>28</a></sup></p><h3 id=titering-on-adherent-cells-forward-procedure>Titering on Adherent Cells (Forward Procedure)
+<a class=anchor href=#titering-on-adherent-cells-forward-procedure>#</a></h3><p><sup id=fnref:29><a href=#fn:29 class=footnote-ref role=doc-noteref>29</a></sup></p><ol><li><p>24-48 hours before performing viral transduction seed your cell line
+of interest in a 12-well plate such that it is near 60-70% confluent
+at time of transduction.</p></li><li><p>Prior to transduction, one well of the replicate 12 wells should be
+dissociated and counted using trypan blue exclusion on a
+hemocytometer to know approximate number of live cells at time of
+transduction.<sup id=fnref:30><a href=#fn:30 class=footnote-ref role=doc-noteref>30</a></sup><sup id=fnref:31><a href=#fn:31 class=footnote-ref role=doc-noteref>31</a></sup></p></li></ol><ol start=3><li>Create stock of media containing your cells’ standard growth medium
+supplemented with 20% FBS containing 0-10 $\mu$g/mL hexadimethrine
+bromide (1:1000 dilution from hexadimethrine bromide stock for 10
+$\mu$g/mL).<sup id=fnref:32><a href=#fn:32 class=footnote-ref role=doc-noteref>32</a></sup></li></ol><ol start=4><li><p>Place 600 $\mu$L of hexadimethrine bromide containing medium
+separate microcentrifuge tubes.</p></li><li><p>Add virus in increasing amounts to each tube (<em>see</em> <strong>Note 33</strong>).</p></li></ol><ol start=7><li>Incubate for 16 hrs at 37 °C, then carefully remove viral containing
+supernatant and replace with complete growth medium.<sup id=fnref:33><a href=#fn:33 class=footnote-ref role=doc-noteref>33</a></sup><sup id=fnref:34><a href=#fn:34 class=footnote-ref role=doc-noteref>34</a></sup></li></ol><ol start=8><li>Incubate for an additional 32 hrs at 37 °C, then remove medium and
+wash each well gently with PBS.<sup id=fnref:35><a href=#fn:35 class=footnote-ref role=doc-noteref>35</a></sup></li></ol><ol start=9><li><p>Dissociate the cells from the plate and centrifuge at 300 x g for 5
+minutes at 4 °C.</p></li><li><p>Wash cell pellets with PBS and repeat spin.</p><ol><li>Perform this step three times to ensure removal of trace virus
+before flow cytometry.</li></ol></li><li><p>Resuspend cells in chilled FACS Buffer.<sup id=fnref:36><a href=#fn:36 class=footnote-ref role=doc-noteref>36</a></sup></p></li></ol><ol start=12><li>Keep cells on ice and continue to step 3.4.3</li></ol><h3 id=titering-on-suspension-cells>Titering on Suspension Cells
+<a class=anchor href=#titering-on-suspension-cells>#</a></h3><ol><li><p>Count your cells of interest using a hemocytometer.</p></li><li><p>Create stock of media containing your cells’ standard growth medium
+supplemented with 20% FBS containing 0-10 $\mu$g/mL hexadimethrine
+bromide (1:1000 dilution from hexadimethrine bromide stock for 10
+$\mu$g/mL).<sup id=fnref:37><a href=#fn:37 class=footnote-ref role=doc-noteref>37</a></sup>.</p></li><li><p>Resuspend 1.20 x 10<sup>6</sup> cells in 7.2 mL of containing
+hexadimethrine bromide media such that the final solution contains 1
+x 10<sup>5</sup> cells in 600 $\mu$L.</p></li><li><p>Plate 600 $\mu$L of cell solution in 10 wells of a tissue culture
+treated 12-well plate</p></li><li><p>Add virus in increasing amounts to each well and mix well.<sup id=fnref:38><a href=#fn:38 class=footnote-ref role=doc-noteref>38</a></sup></p></li><li><p>Incubate for 16 hrs at 37 °C.<sup id=fnref:39><a href=#fn:39 class=footnote-ref role=doc-noteref>39</a></sup><sup id=fnref:40><a href=#fn:40 class=footnote-ref role=doc-noteref>40</a></sup></p></li><li><p>Transfer cell suspensions to sterile 1.7 mL microcentrifuge tubes
+and spin down at 500 x g for 5 minutes at 4 °C.<sup id=fnref:41><a href=#fn:41 class=footnote-ref role=doc-noteref>41</a></sup></p></li></ol><ol start=8><li><p>Resuspend each cell pellet with complete growth medium and transfer
+to fresh 12-well plate.</p></li><li><p>Incubate for an additional 32 hrs at 37 °C, then transfer wells to
+microcentrifuge tubes and spin down at 400 x g for 5 minutes at 4
+°C.<sup id=fnref:42><a href=#fn:42 class=footnote-ref role=doc-noteref>42</a></sup></p></li></ol><ol start=10><li>Wash cell pellets with PBS and repeat spin.<sup id=fnref:43><a href=#fn:43 class=footnote-ref role=doc-noteref>43</a></sup></li></ol><ol start=11><li><p>Resuspend cells in chilled FACS Buffer.<sup id=fnref:44><a href=#fn:44 class=footnote-ref role=doc-noteref>44</a></sup></p></li><li><p>Keep cells on ice and continue to step 3.4.3</p></li></ol><h3 id=flow-cytometry-to-determine-viral-titer>Flow Cytometry to Determine Viral Titer
+<a class=anchor href=#flow-cytometry-to-determine-viral-titer>#</a></h3><ol><li>Pass cells resuspended in FACS buffer through a 35 $\mu$m nylon mesh
+strainer into a 5 mL flow cytometry test tube.<sup id=fnref:45><a href=#fn:45 class=footnote-ref role=doc-noteref>45</a></sup></li></ol><ol start=2><li>Use control samples to set laser voltages on FSC-A, SSC-A, and BFP
+such that nearly all cells are seen within FSC-A vs. SSC-A plot and
+both negative and positive populations can be seen and distinguished
+on the BFP channel.<sup id=fnref:46><a href=#fn:46 class=footnote-ref role=doc-noteref>46</a></sup></li></ol><ol start=3><li><p>After setting voltages with control samples, run transduced samples
+from lowest viral to highest. Set the cytometer to record at least
+10,000 events for each sample. Record %BFP-positive for each
+titration.</p></li><li><p>Create a plot showing volume of virus on the x-axis and
+%BFP-positive on the y-axis.<sup id=fnref:47><a href=#fn:47 class=footnote-ref role=doc-noteref>47</a></sup></p></li></ol><p>Calculate viral titer in titering units (TU) per mL using <strong>Equation 1</strong>
+using a pair of values within the linear region of the titer curve.<sup id=fnref:48><a href=#fn:48 class=footnote-ref role=doc-noteref>48</a></sup></p><p>$$\frac{\text{TU}}{\text{mL}}\text{=}\frac{\left(\text{Number of cells at time of transduction} \right)\text{ × }\left( \text{Fraction of Positive Cells} \right)}{\left( \text{Volume of virus }\left\lbrack \text{mL} \right\rbrack \right)}$$</p><h2 id=sgrna-barcode-transduction>sgRNA Barcode Transduction
+<a class=anchor href=#sgrna-barcode-transduction>#</a></h2><ol><li>After calculating the viral titer (TU/mL) on your cell line of
+interest, determine the final number of cells you require for your
+experiment using and transduce cells at a multiplicity of infection
+(MOI) of 0.1 (<strong>Equation 2</strong>) to minimize the occurrence of multiple
+barcode integrations.<sup id=fnref:49><a href=#fn:49 class=footnote-ref role=doc-noteref>49</a></sup><sup id=fnref:50><a href=#fn:50 class=footnote-ref role=doc-noteref>50</a></sup></li></ol><ol start=2><li><p>Use control samples to set laser voltages on FSC-A, SSC-A, and BFP
+such that nearly all cells are seen within FSC-A vs. SSC-A plot and
+both negative and positive .populations can be seen and
+distinguished on the BFP channel.<sup id=fnref:51><a href=#fn:51 class=footnote-ref role=doc-noteref>51</a></sup></p></li><li><p>Set sort gate on BFP-positive cells indicative of a productive sgRNA
+barcode.<sup id=fnref:52><a href=#fn:52 class=footnote-ref role=doc-noteref>52</a></sup></p></li></ol><ol start=4><li><p>Sort cells on BFP-positive gate via FACS.</p></li><li><p>Maintain sorted cells in culture with complete growth medium.</p></li></ol><p>$$\text{MOI [TU/cell] = }\frac{\left( \text{Volume of Virus needed [mL]} \right)\text{ × }\left( \text{Titer of Virus [TU/mL]} \right)}{\left( \text{Number of cells exposed to virus} \right)}\text{ = 0.1}$$</p><h2 id=targeted-sgrna-barcode-sampling-of-cells>Targeted sgRNA Barcode Sampling of Cells
+<a class=anchor href=#targeted-sgrna-barcode-sampling-of-cells>#</a></h2><h3 id=preparing-samples-for-sequencing>Preparing Samples for Sequencing
+<a class=anchor href=#preparing-samples-for-sequencing>#</a></h3><ol><li>To assess cell barcode diversity harvest cells from culture and
+collect into cell pellet.<sup id=fnref:53><a href=#fn:53 class=footnote-ref role=doc-noteref>53</a></sup></li></ol><ol start=2><li><p>Isolate genomic DNA from cell pellet using kit or standard protocol
+and proceed to PCR amplification.</p></li><li><p>Prepare the PCR reaction to amplify barcodes and add Illumina
+indices<sup id=fnref:54><a href=#fn:54 class=footnote-ref role=doc-noteref>54</a></sup> by mixing 10 uL 5X Q5 Reaction Buffer, 1 $\mu$L 10 mM
+dNTPs, 2.5 $\mu$L PrimeF-PAS (from step 3.2.2), 2.5 $\mu$L
+PrimeR_cropseq (<em>see</em> <strong>Table 1</strong>), 0.5 $\mu$L Q5 polymerase, up to
+2 $\mu$g genomic DNA<sup id=fnref:55><a href=#fn:55 class=footnote-ref role=doc-noteref>55</a></sup>, and nuclease-free water to 50 $\mu$L. See
+<a href=/clonmapper/#10X>10X-3.6.1.3</a> for 10X vector variation.</p></li></ol><ol start=4><li><p>Amplify the barcodes by running the 50 $\mu$L reaction on a
+thermocycler using the following settings<sup id=fnref:56><a href=#fn:56 class=footnote-ref role=doc-noteref>56</a></sup>: (1) 98 °C for 2
+min, (2) 98 °C for 10 sec, (3) 63 °C for 30 sec, (4) 72 °C for 15
+sec, (4) Repeat steps 2-4 for 20 cycles, (5) 72 °C for 2 min, (6) 4
+°C hold</p></li><li><p>Finish preparing barcodes as described in 3.2 steps 4-20.</p></li></ol><h3 id=processing-barcode-sequencing-data-wip>Processing Barcode Sequencing Data (<em>WIP!</em>)
+<a class=anchor href=#processing-barcode-sequencing-data-wip>#</a></h3><p>See
+<a href=https://github.com/brocklab/pycashier>pycashier</a> for more info
+about how to get started processing fastq data to get barcode
+information.</p><h2 id=recall-plasmid-assembly>Recall Plasmid Assembly
+<a class=anchor href=#recall-plasmid-assembly>#</a></h2><ol><li>3 pairs of overlapping oligos containing the barcode sequence of
+interest flanked by overlapping sequences should be ordered
+according to <strong>Table 1</strong>.<sup id=fnref:57><a href=#fn:57 class=footnote-ref role=doc-noteref>57</a></sup></li></ol><ol start=2><li>In separate tubes, mix each of the 100 $\mu$M oligo pairs together:</li></ol><ul><li>Tube AB: 10 $\mu$L Bg-AB-fwd + 10 $\mu$L Bg-AB-rev</li><li>Tube BC: 10 $\mu$L Bg-BC-fwd + 10 $\mu$L Bg-BC-rev</li><li>Tube CD: 10 $\mu$L Bg-CD-fwd + 10 $\mu$L Bg-CD-rev</li></ul><ol start=3><li>Heat each to 80 °C and let cool to create DNA blocks containing a
+barcode, a PAM site, and overhang sequences.<sup id=fnref:58><a href=#fn:58 class=footnote-ref role=doc-noteref>58</a></sup></li></ol><ol start=4><li><p>Ligate DNA blocks together creating the barcode array by mixing 10
+$\mu$L “Tube AB”, 10 $\mu$L “Tube BC”, 10 $\mu$L “Tube CD”, 5 $\mu$L
+10 mM dNTPs, 5 $\mu$L 10X T4 PNK buffer, 1 $\mu$L T4 PNK, and 9
+$\mu$L nuclease-free water (50 $\mu$L reaction volume).</p></li><li><p>Incubate at 37 °C for 45 minutes.</p></li><li><p>Add 2 $\mu$L T7 DNA ligase to the 50 $\mu$L mixture and incubate at
+room temperature overnight.</p></li><li><p>Run ligation product in a 2% agarose gel and gel purify band from
+approximately 200 bp</p></li><li><p>Ligate the barcode array into the recall plasmid backbone at a molar
+ratio of 10:1 in a Golden Gate assembly reaction by mixing 25 fmol
+Recall-miniCMV-sfGFP, 250 fmol assembled barcode array (<em>from step
+3.8.5</em>), 1 $\mu$L T4 ligase buffer, 0.5 $\mu$L T7 ligase, 0.5 $\mu$L
+BbsI, and nuclease-free water to 10 $\mu$L.</p></li><li><p>Run the Golden Gate assembly reaction on a thermocycler using the
+following settings: (1) 42 °C for 2 min, (2) 16 °C for 5 min, (3)
+Repeat steps 1-2 for 35 cycles, (4) 55 °C for 30 min, (6) 4 °C hold</p></li></ol><ol start=10><li>Transform bacteria with golden gate product.<sup id=fnref:59><a href=#fn:59 class=footnote-ref role=doc-noteref>59</a></sup></li></ol><ol start=11><li>Verify insertion of barcode array into Recall-miniCMV-sfGFP backbone
+via Sanger sequencing.</li></ol><h2 id=recall-and-isolation-of-barcoded-lineages>Recall and Isolation of Barcoded Lineages
+<a class=anchor href=#recall-and-isolation-of-barcoded-lineages>#</a></h2><p><sup id=fnref:60><a href=#fn:60 class=footnote-ref role=doc-noteref>60</a></sup><sup id=fnref:61><a href=#fn:61 class=footnote-ref role=doc-noteref>61</a></sup></p><ol><li><p>24-48 hours before performing recall transfection seed your cell
+line of interest in growth medium in a 6-well plate such that it is
+near 60-80% confluent at time of transfection.</p></li><li><p>Per well of a 6 well plate, prepare “Tube A” containing 100 $\mu$L
+Opti-MEM<sup>TM</sup> and 9 $\mu$L Lipofectamine<sup>TM</sup>
+3000.<sup id=fnref:62><a href=#fn:62 class=footnote-ref role=doc-noteref>62</a></sup></p></li><li><p>Incubate “Tube A” at room temperature for 5 minutes.</p></li><li><p>Per well of a 6 well plate, prepare “Tube B” containing 125 $\mu$L
+Opti-MEM<sup>TM</sup>, 225 ng Recall plasmid (<em>from Section 3.8</em>),
+275 ng dCas9-VPR plasmid and 2 $\mu$L$\mu$g DNA of p3000.</p></li><li><p>Slowly add “Tube B” dropwise to “Tube A” and carefully mix by gently
+inverting 10 times.</p></li><li><p>Incubate at room temperature for 20 minutes.</p></li><li><p>Add 225 $\mu$L of the transfection mix slowly and dropwise to each
+well of adherent cells.</p></li><li><p>16-18 hours post-transfection, carefully remove media containing
+Lipofectamine<sup>TM</sup> 3000/DNA complexes and slowly replenish
+with growth medium supplemented with 20% FBS without antibiotics.</p></li><li><p>48-72 hours post-transfection, dissociate cells from the plate and
+wash cells with PBS twice at 300 x g for 5 minutes at 4 °C before
+resuspending in chilled FACS buffer.<sup id=fnref:63><a href=#fn:63 class=footnote-ref role=doc-noteref>63</a></sup></p></li><li><p>Pass cells resuspended in FACS buffer through a 35 $\mu$m nylon mesh
+strainer into a 5 mL flow cytometry test tube and keep on ice.</p></li><li><p>Use control samples to set laser voltages on FSC-A, SSC-A, BFP, and
+GFP on FACS sorter such that nearly all cells are seen within FSC-A
+vs. SSC-A plot and both negative and positive populations can be
+seen and distinguished on the BFP and the GFP channel. Set
+compensations based on single positive populations.<sup id=fnref:64><a href=#fn:64 class=footnote-ref role=doc-noteref>64</a></sup></p></li></ol><ol start=12><li>Set sort gate on GFP and BFP double positive gate indicative of a
+recalled cell.<sup id=fnref:65><a href=#fn:65 class=footnote-ref role=doc-noteref>65</a></sup></li></ol><ol start=13><li>Sort cells in GFP and BFP double positive gate.<sup id=fnref:66><a href=#fn:66 class=footnote-ref role=doc-noteref>66</a></sup></li></ol><ol start=14><li>Maintain sorted cells in culture with complete growth medium.</li></ol><h2 id=10x-capture-variation>10X Capture Variation
+<a class=anchor href=#10x-capture-variation>#</a></h2><p>3.1.1. Perform an extension reaction to generate double-stranded insert
+gRNA barcode DNA. Mix 10 $\mu$L NEB 5X Q5 Reaction Buffer, 1 $\mu$L of
+10 mM dNTPs, 2 $\mu$L 100$\mu$M 10X-PrimeF-BgL-BbsI, 1 $\mu$L 100$\mu$M
+10X-RevExt-BgL-BbsI and 0.5 $\mu$L to create a 50 $\mu$L reaction.</p><p>3.1.4. Digest 5-10 $\mu$g of 10X Capture vector backbone in a reaction
+containing 20 $\mu$L Digestion Buffer 3.1, 8 $\mu$L BbsI, and
+nuclease-fee water to 200 $\mu$L.</p><p>3.2.3. Prepare the PCR reaction to amplify barcodes and add Illumina
+indices by mixing 10 uL 5X Q5 Reaction Buffer, 1 $\mu$L 10 mM dNTPs, 2.5
+$\mu$L PrimeF-PAS (from step 3.2.2), 2.5 $\mu$L PrimeR_10x (<em>see</em>
+<strong>Table 1</strong>), 0.5 $\mu$L Q5 polymerase, 50 ng plasmid DNA, and
+nuclease-free water to 50 $\mu$L.</p><p>3.6.1.3 Prepare the PCR reaction to amplify barcodes and add Illumina
+indices by mixing 10 uL 5X Q5 Reaction Buffer, 1 $\mu$L 10 mM dNTPs, 2.5
+$\mu$L PrimeF-PAS (from step 3.2.2), 2.5 $\mu$L PrimeR_10x (<em>see</em>
+<strong>Table 1</strong>), 0.5 $\mu$L Q5 polymerase, up to 2 $\mu$g genomic DNA<sup id=fnref:67><a href=#fn:67 class=footnote-ref role=doc-noteref>67</a></sup>,
+and nuclease-free water to 50 $\mu$L.</p><table><caption>Oligonucleotides</caption><col style=width:29%><col style=width:23%><col style=width:23%><col style=width:23%><thead><tr class=header><th style=text-align:center>Step</th><th style=text-align:left>Name</th><th style=text-align:left>Sequence (5’–>3’)</th><th style=text-align:left>Notes</th></tr></thead><tbody><tr class=odd><td style=text-align:center>3.1</td><td style=text-align:left>CROPseq-PrimeF-BgL-BsmBI</td><td style=text-align:left>GAGCCTCGTCTCCCACCG<strong>NNNNNNNNNNNNNNNNNNNN</strong>GTTTTGAGACGCATGCTGCA</td><td style=text-align:left>The N20 sequence is a random string of
+oligonucleotides</td></tr><tr class=even><td style=text-align:center>3.1</td><td style=text-align:left>CROPseq-RevExt-BgL-BsmBI</td><td style=text-align:left>TGCAGCATGCGTCTCAAAAC</td><td style=text-align:left></td></tr><tr class=odd><td style=text-align:center>3.1</td><td style=text-align:left>10X PrimeF-BgL-BbsI</td><td style=text-align:left>GCCTGAAGACCTCACCG<strong>NNNNNNNNNNNNNNNNNNNN</strong>GTTTTAGTCTTCCATGCTGC</td><td style=text-align:left>The N20 sequence is a random string of
+oligonucleotides</td></tr><tr class=even><td style=text-align:center>3.1</td><td style=text-align:left>10X-RevExt-BgL-BbsI</td><td style=text-align:left>TGCAGCATGGAAGACTAAAAC</td><td style=text-align:left> </td></tr><tr class=odd><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeR_cropseq</td><td style=text-align:left>CAAGCAGAAGACGGCATACGAGAT<strong>NNNNNN</strong>GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCTGGACTAGCCTTATTTTAACTTGCTATTTCTAGCTC</td><td style=text-align:left>The N6 sequence is where the i7 Illumina
+index should be placed</td></tr><tr class=even><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeR_10x</td><td style=text-align:left>CAAGCAGAAGACGGCATACGAGAT<strong>NNNNNN</strong>GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCTCTAGGACCGGCCTTAAAGC</td><td style=text-align:left>The N6 sequence is where the i7 Illumina
+index should be placed</td></tr><tr class=odd><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeF-PAS</td><td style=text-align:left>equimolar mixture of UniF PAS primers</td><td style=text-align:left> </td></tr><tr class=even><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeF-PASx0</td><td style=text-align:left>AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCTGCTTTATATATCTTGTGGAAAGGACGAAAC</td><td style=text-align:left> </td></tr><tr class=odd><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeF-PASx1</td><td style=text-align:left>AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCTCGCTTTATATATCTTGTGGAAAGGACGAAAC</td><td style=text-align:left> </td></tr><tr class=even><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeF-PASx2</td><td style=text-align:left>AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCTGCGCTTTATATATCTTGTGGAAAGGACGAAAC</td><td style=text-align:left> </td></tr><tr class=odd><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeF-PASx3</td><td style=text-align:left>AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCTAGCGCTTTATATATCTTGTGGAAAGGACGAAAC</td><td style=text-align:left> </td></tr><tr class=even><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeF-PASx4</td><td style=text-align:left>AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCTCAACGCTTTATATATCTTGTGGAAAGGACGAAAC</td><td style=text-align:left> </td></tr><tr class=odd><td style=text-align:center>3.2, 3.7</td><td style=text-align:left>PrimeF-PASx5</td><td style=text-align:left>AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCTTGCACCGCTTTATATATCTTGTGGAAAGGACGAAAC</td><td style=text-align:left> </td></tr><tr class=even><td style=text-align:center>3.8</td><td style=text-align:left>Bg-AB-fwd</td><td style=text-align:left>TACTCGACCAAGAACCGC<strong>NNNNNNNNNNNNNNNNNNNN</strong>AAGGTGGATTAGTTCTCT</td><td style=text-align:left>Insert barcode in place of N20</td></tr><tr class=odd><td style=text-align:center>3.8</td><td style=text-align:left>Bg-AB-rev</td><td style=text-align:left>AAGCAGAGAACTAATCCACC<strong>NNNNNNNNNNNNNNNNNNNN</strong>TTGCGGTTCTTGGTCG</td><td style=text-align:left>Insert reverse-complement barcode in place
+of N20</td></tr><tr class=even><td style=text-align:center>3.8</td><td style=text-align:left>Bg-BC-fwd</td><td style=text-align:left>GCTTGTCCTGCGGTTACCC<strong>NNNNNNNNNNNNNNNNNNNN</strong>AGGCTGTAATCCAGCTG</td><td style=text-align:left>Insert barcode in place of N20</td></tr><tr class=odd><td style=text-align:center>3.8</td><td style=text-align:left>Bg-BC-rev</td><td style=text-align:left>AGCGCAGCTGGATTACAGCC<strong>NNNNNNNNNNNNNNNNNNNN</strong>TGGGTAACCGCAGGAC</td><td style=text-align:left>Insert reverse-complement barcode in place
+of N20</td></tr><tr class=even><td style=text-align:center>3.8</td><td style=text-align:left>Bg-CD-fwd</td><td style=text-align:left>CGCTGTGGTATCACTCGTC<strong>NNNNNNNNNNNNNNNNNNNN</strong>AGGCTCAGCTAAGGTGC</td><td style=text-align:left>Insert barcode in place of N20</td></tr><tr class=odd><td style=text-align:center>3.8</td><td style=text-align:left>Bg-CD-rev</td><td style=text-align:left>CATTGCACCTTAGCTGAGCC<strong>NNNNNNNNNNNNNNNNNNNN</strong>TGACGAGTGATACCAC</td><td style=text-align:left>Insert reverse-complement barcode in place
+of N20</td></tr></tbody></table><p>Oligonucleotides</p><table><caption>Recommended Reagents</caption><thead><tr class=header><th style=text-align:left>Name</th><th style=text-align:center>Vendor</th><th style=text-align:center>Catalog No.</th></tr></thead><tbody><tr class=odd><td style=text-align:left>AMPure XP Reagent</td><td style=text-align:center>Beckman Coulter</td><td style=text-align:center>A63880</td></tr><tr class=even><td style=text-align:left>BbsI-HF</td><td style=text-align:center>NEB</td><td style=text-align:center>R3539S</td></tr><tr class=odd><td style=text-align:left>BsmBI-v2</td><td style=text-align:center>NEB</td><td style=text-align:center>R0739S</td></tr><tr class=even><td style=text-align:left>Q5 Hot Start Polymerase</td><td style=text-align:center>NEB</td><td style=text-align:center>M0493S</td></tr><tr class=odd><td style=text-align:left>T4 Ligase</td><td style=text-align:center>NEB</td><td style=text-align:center>M0202S</td></tr><tr class=even><td style=text-align:left>T4 PNK</td><td style=text-align:center>NEB</td><td style=text-align:center>M0201S</td></tr><tr class=odd><td style=text-align:left>T7 Ligase</td><td style=text-align:center>NEB</td><td style=text-align:center>M0318S</td></tr><tr class=even><td style=text-align:left>Genomic DNA Mini Kit</td><td style=text-align:center>ThermoFisher</td><td style=text-align:center>K182001</td></tr><tr class=odd><td style=text-align:left>Lipofectamine 2000</td><td style=text-align:center>ThermoFisher</td><td style=text-align:center>11668030</td></tr><tr class=even><td style=text-align:left>Lipofectamine 3000</td><td style=text-align:center>ThermoFisher</td><td style=text-align:center>L3000001</td></tr><tr class=odd><td style=text-align:left>OptiMEM</td><td style=text-align:center>ThermoFisher</td><td style=text-align:center>31985070</td></tr><tr class=even><td style=text-align:left>Typan Blue Stain</td><td style=text-align:center>ThermoFisher</td><td style=text-align:center>T10282</td></tr><tr class=odd><td style=text-align:left>2xYT medium</td><td style=text-align:center>Millpore Sigma</td><td style=text-align:center>Y2377-250G</td></tr><tr class=even><td style=text-align:left>Carbenicillin</td><td style=text-align:center>Millpore Sigma</td><td style=text-align:center>C1389-250MG</td></tr><tr class=odd><td style=text-align:left>DMEM</td><td style=text-align:center>Millpore Sigma</td><td style=text-align:center>D5671</td></tr><tr class=even><td style=text-align:left>Hexadimethrine bromide</td><td style=text-align:center>Millpore Sigma</td><td style=text-align:center>TR-1003-G</td></tr><tr class=odd><td style=text-align:left>Plasmid Plus Kit (Midi)</td><td style=text-align:center>Qiagen</td><td style=text-align:center>12941</td></tr><tr class=even><td style=text-align:left>DNA Clean and Concentrator-5</td><td style=text-align:center>Zymo</td><td style=text-align:center>D4013</td></tr></tbody></table><p>Recommended Reagents</p><h1 id=acknowledgements>Acknowledgements
+<a class=anchor href=#acknowledgements>#</a></h1><p>This work has been supported by funding through the NIH (R21CA212928 to
+AB).</p><div id=refs class="references csl-bib-body"><div id=ref-blundell2014 class=csl-entry><p><span class=csl-left-margin>1. </span><span class=csl-right-inline>J. R. Blundell, S. F. Levy,
+<a href=https://doi.org/10.1016/j.ygeno.2014.09.005>Beyond genome
+sequencing: Lineage tracking with barcodes to study the dynamics of
+evolution, infection, and
+cancer</a>. <em>Genomics</em>
+<strong>104</strong>, 417–430 (2014).</span></p></div><div id=ref-kebschull2018 class=csl-entry><p><span class=csl-left-margin>2. </span><span class=csl-right-inline>J. M. Kebschull, A. M. Zador,
+<a href=https://doi.org/10.1038/s41592-018-0185-x>Cellular
+barcoding: Lineage tracing, screening and
+beyond</a>. <em>Nature Methods</em>
+<strong>15</strong>, 871–879 (2018).</span></p></div><div id=ref-alkhafaji2018 class=csl-entry><p><span class=csl-left-margin>3. </span><span class=csl-right-inline>A. M. Al’Khafaji, D. Deatherage, A. Brock,
+<a href=https://doi.org/10.1021/acssynbio.8b00105>Control of Lineage-Specific Gene Expression by <span class=nocase>Functionalized gRNA
+Barcodes</span></a>. <em>ACS
+Synthetic Biology</em> <strong>7</strong>, 2468–2474 (2018).</span></p></div><div id=ref-chavez2015 class=csl-entry><p><span class=csl-left-margin>4. </span><span class=csl-right-inline>A. Chavez, <em>et al.</em>,
+<a href=https://doi.org/10.1038/nmeth.3312>Highly efficient <span class=nocase>Cas9-mediated</span> transcriptional
+programming</a>. <em>Nature Methods</em>
+<strong>12</strong>, 326–328 (2015).</span></p></div><div id=ref-datlinger2017 class=csl-entry><p><span class=csl-left-margin>5. </span><span class=csl-right-inline>P. Datlinger, <em>et al.</em>,
+<a href=https://doi.org/10.1038/nmeth.4177>Pooled CRISPR
+screening with single-cell transcriptome
+readout</a>. <em>Nature Methods</em> <strong>14</strong>,
+297–301 (2017).</span></p></div><div id=ref-10xgenomics class=csl-entry><p><span class=csl-left-margin>6. </span><span class=csl-right-inline>10xGenomics, “Guide RNA Specifications
+Compatible with Feature Barcoding technology for CRISPR screening. 10x
+Genomics.”</span></p></div><div id=ref-davis2002 class=csl-entry><p><span class=csl-left-margin>7. </span><span class=csl-right-inline>H. E. Davis, J. R. Morgan, M. L. Yarmush,
+<a href=https://doi.org/10.1016/S0301-4622%2802%2900057-1>Polybrene increases retrovirus gene transfer efficiency by enhancing
+receptor-independent virus adsorption on target cell
+membranes</a>. <em>Biophysical
+Chemistry</em> <strong>97</strong>, 159–172 (2002).</span></p></div><div id=ref-fehse2004 class=csl-entry><p><span class=csl-left-margin>8. </span><span class=csl-right-inline>B. Fehse, O. S. Kustikova, M. Bubenheim, C.
+Baum,
+<a href=https://doi.org/10.1038/sj.gt.3302270>Pois(s)on It’s a Question of
+Dose…</a>. <em>Gene Therapy</em> <strong>11</strong>,
+879–881 (2004).</span></p></div><div id=ref-kustikova2003 class=csl-entry><p><span class=csl-left-margin>9. </span><span class=csl-right-inline>O. S. Kustikova, <em>et al.</em>,
+<a href=https://doi.org/10.1182/blood-2003-05-1424>Dose finding with
+retroviral vectors: Correlation of retroviral vector copy numbers in
+single cells with gene transfer efficiency in a cell
+population</a>. <em>Blood</em>
+<strong>102</strong>, 3934–3937 (2003).</span></p></div></div><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>Make sure cells are transducible with lentivirus. Timing of
+lentiviral exposure and detectable expression of transgene will vary
+across cell types.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p>Always use filtered pipette tips when working with DNA to prevent
+cross-contamination.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3><p>A 1X Golden Gate assembly reaction is setup by mixing 25 fmol
+digested gRNA transfer vector (<em>from step 3.1.4</em>), 250 fmol double
+stranded gRNA barcode DNA (<em>from step 3.1.1</em>), 1 $\mu$L T4 ligase
+buffer, 0.5 $\mu$L T7 ligase, 0.5 $\mu$L BsmBI (CROPseq) or BbsI
+(10X Capture), and nuclease-free water to 10 $\mu$L.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4><p>Letting the water sit on the column for 3-5 minutes before elution
+increases yield. Re-run elution product through column 3 times to
+maximize yield.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:5><p>Make sure to use <em>E. coli</em> suitable for use with unstable DNA.&#160;<a href=#fnref:5 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:6><p>Do not pipet up and down. Ensure bubbles are not added to the mix
+which can cause electrical arcing and cell death during
+electroporation).&#160;<a href=#fnref:6 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:7><p>Optimal time constants should be between 4.2-5.4 ms. This protocol
+was optimized with the EC2 setting on the Bio-Rad
+MicroPulser<sup>TM</sup> Electroporator.&#160;<a href=#fnref:7 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:8><p>Transformation efficiency (TE) is defined as the number of
+colonies produced with transformation with 1 $\mu$g of plasmid DNA.
+To calculate TE, count the number of colonies formed on the plate,
+calculate the amount of DNA used in $\mu$g, and determine your
+dilution factor. With those variable, TE = Colonies/$\mu$g/Dilution.&#160;<a href=#fnref:8 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:9><p>Universal phase amplicon sequencing primers are used to add more
+diversity to the sequencing reads which helps prevents sequencing
+errors.&#160;<a href=#fnref:9 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:10><p>Choose Illumina i7 index <u>NNNNNN</u> based on Illumina
+sequencer to be used and avoid using the same i7 index for different
+samples.&#160;<a href=#fnref:10 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:11><p>Pre-heat thermocycler to 98 °C before adding tubes to heat block.&#160;<a href=#fnref:11 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:12><p>The number of cycles will depend on the starting template amount
+(7-23 cycles). A nested PCR reaction may have to be performed to
+enhance barcode specificity.&#160;<a href=#fnref:12 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:13><p>Do not over dry the beads, this can result in a loss of yield and
+quality.&#160;<a href=#fnref:13 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:14><p>Beads may become trapped within the meniscus of the water.
+Pipetting slowly will keep the beads against the wall of the tube
+and leave them in the remaining 2 $\mu$L of water.&#160;<a href=#fnref:14 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:15><p>If there are considerable peaks at 120 bp or less, SPRI bead
+cleanup can be repeated with 1.1X beads to further purify PCR
+sample, but this will greatly reduce yield.&#160;<a href=#fnref:15 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:16><p>Lentivirus can promiscuously infect cells, including your skin!
+Use a cuffed-sleeve lab coat and double-glove (one glove under
+sleeve cuffs, one glove over) at every step involving use of virus.&#160;<a href=#fnref:16 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:17><p>Ethanol does not kill lentivirus. Always keep a working stock of
+100% bleach in the BSL-2 culture hood in which virus is being
+handled. Soak pipet tips, serological pipets, and other disposables
+that come in contact with virus in 100% bleach and irradiate with UV
+for at least 30 minutes before disposal as biohazardous waste. Wipe
+down virus containing tissue culture plates with disinfecting wipes
+certified to kill HIV such as CaviCide before removing from culture
+hood.&#160;<a href=#fnref:17 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:18><p>Slowly dilute Lipofectamine<sup>TM</sup> complexes dropwise with
+Opti-MEM<sup>TM</sup> media with occasional flicking of the tube.&#160;<a href=#fnref:18 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:19><p>You are working with live virus at this stage and beyond.
+Stringently adhere to all biosafety procedures. Bleach and UV all
+media and containers exposed to live virus and virus producing
+reagents.&#160;<a href=#fnref:19 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:20><p>Cells exposed to lentivirus are fragile and extra care must be
+taken in removing and adding media.&#160;<a href=#fnref:20 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:21><p>Virus should be stored in labeled secondary containment.&#160;<a href=#fnref:21 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:22><p>Virus-producing HEK-293T cells should be bleached and UV
+irradiated in culture for at least 30 minutes to inactivate
+remaining virus before disposal.&#160;<a href=#fnref:22 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:23><p>Never use a vacuum line to disposal of virus waste as this may
+produce aerosols.&#160;<a href=#fnref:23 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:24><p>Spin times will vary based on centrifuge angle. spinning at 4 °C
+will increase the amount of time it takes for media to pass through
+filter (We have noted that 22 mL takes about 75 minutes).&#160;<a href=#fnref:24 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:25><p>Even just a single freeze-thaw cycle can drastically alter viral
+titer, be sure to minimize freeze-thaw cycles.&#160;<a href=#fnref:25 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:26><p>Virus should be completed frozen and then thawed before
+calculating viral titer.&#160;<a href=#fnref:26 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:27><p>Viral titer will vary between cell type and with each new virus
+preparation.&#160;<a href=#fnref:27 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:28><p>Lentivirus susceptibility and timing should first be determined
+on your cells of interest using a control plasmid such as a
+constitutively active GFP. Some cells will require longer or shorter
+incubation times with the virus and some cells will take longer to
+produce the transgenic reporter protein.&#160;<a href=#fnref:28 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:29><p>To perform reverse titer on adherent cells, follow the steps for
+titering on suspension cells through step 3.4.2.5, then return to
+the adherent protocol at step 3.4.1.6.&#160;<a href=#fnref:29 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:30><p>It is very important to know the number of cells at the time of
+transduction. This number is used to calculate viral titer.&#160;<a href=#fnref:30 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:31><p>Trypan blue exclusion is performed by mixing equal parts 0.05%
+Trypan blue with your cell suspension, usually 10 $\mu$L of each,
+then load 10 $\mu$L of the stained suspension into the
+hemocytometer.&#160;<a href=#fnref:31 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:32><p>Hexadimethrine bromide is a cationic solution that assists in
+viral adsorption to cells (7). Hexadimethrine bromide can be toxic
+to some cells. Hexadimethrine bromide sensitivity should be assessed
+via serial dilution to determine maximum tolerable hexadimethrine
+bromide dose before determining viral titer. Most cells respond well
+to 6-8 $\mu$g/mL hexadimethrine bromide.&#160;<a href=#fnref:32 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:33><p>Lentiviral exposure time will vary across cell type dependent on
+growth dynamics and properties intrinsic to the cells. Optimize
+lentiviral exposure time with constitutively active GFP virus before
+transduction with sgRNA barcoding library virus. The protocol as
+described was optimized for MDA-MB-231 (ATCC HTB-26) breast cancer
+cells.&#160;<a href=#fnref:33 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:34><p>Lentiviral exposure times range between 12-48 hours. Lentiviral
+exposure time should be minimized to reduce the occurrence of
+multiple viral integrations.&#160;<a href=#fnref:34 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:35><p>Lentivirus transduced cells are very fragile and should be
+handled with added care.&#160;<a href=#fnref:35 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:36><p>EDTA and FBS in FACS buffer help to prevent cell clumping. For
+extra-sticky cells, use 5 mM EDTA in FACS buffer.&#160;<a href=#fnref:36 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:37><p>Hexadimethrine bromide is a cationic solution that assists in
+viral adsorption to cells (7). Hexadimethrine bromide can be toxic
+to some cells. Hexadimethrine bromide sensitivity should be assessed
+via serial dilution to determine maximum tolerable hexadimethrine
+bromide dose before determining viral titer. Most cells respond well
+to 6-8 $\mu$g/mL hexadimethrine bromide.&#160;<a href=#fnref:37 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:38><p>Ensure one well is kept uninfected as a negative control. A range
+of 0.5-200 $\mu$L is usually sufficient to find viral titer, e.g. 0,
+0.5, 1, 5, 10, 25, 50, 100, 150, 200 $\mu$L. 6. Replace media on
+cells of interest with virus and hexadimethrine bromide containing
+dilutions.&#160;<a href=#fnref:38 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:39><p>Lentiviral exposure time will vary across cell type dependent on
+growth dynamics and properties intrinsic to the cells. Optimize
+lentiviral exposure time with constitutively active GFP virus before
+transduction with sgRNA barcoding library virus. The protocol as
+described was optimized for MDA-MB-231 (ATCC HTB-26) breast cancer
+cells.&#160;<a href=#fnref:39 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:40><p>Lentiviral exposure times range between 12-48 hours. Lentiviral
+exposure time should be minimized to reduce the occurrence of
+multiple viral integrations.&#160;<a href=#fnref:40 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:41><p>Use a pipette to remove lentivirus containing supernatant and
+dispose of in bleach. Do not vacuum aspirate &ndash; vacuums can cause
+dangerous viral aerosols.&#160;<a href=#fnref:41 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:42><p>Lentivirus transduced cells are very fragile and should be
+handled with added care when pipetting.&#160;<a href=#fnref:42 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:43><p>Perform this step three times to ensure removal of trace virus
+before flow cytometry.&#160;<a href=#fnref:43 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:44><p>EDTA and FBS in FACS buffer help to prevent cell clumping. For
+extra-sticky cells, use 5 mM EDTA in FACS buffer.&#160;<a href=#fnref:44 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:45><p>Ensure proper controls for flow. Minimally have a positive
+control expressing BFP and a negative control expressing no
+fluorescent proteins.&#160;<a href=#fnref:45 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:46><p>BFP populations will be normally distributed. For titer
+calculations, it is useful to set tight gates such that 99.98% of
+the negative control cells are captured in the negative gate.&#160;<a href=#fnref:46 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:47><p>Plot will appear logarithmic. Only values within the linear
+region of the plot should be used to calculate viral titer (usually
+between 10-40% BFP-positive).&#160;<a href=#fnref:47 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:48><p><u>Example</u>: If 5 $\mu$L of virus added to 100,000 cells
+resulted in 30% BFP-positive cells within the linear region of the
+titer curve, then the viral titer would be (100,000 x 0.30) / (0.005
+mL) = 6.0 x 10<sup>6</sup> TU/mL&#160;<a href=#fnref:48 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:49><p><u>Example</u>: If your viral titer was 6.0 x 10<sup>6</sup>
+TU/mL and you wanted to infect 3.0 x 10<sup>6</sup> cells at an MOI
+of 0.1, you would need to subject the 3.0 x 10<sup>6</sup> cells to
+50 $\mu$L of virus.&#160;<a href=#fnref:49 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:50><p>A low MOI of 0.1 or below helps prevent occurrence of multiple
+barcode integrations. In order to uniquely recall cell lineages it
+is important to maximize the probability that there is one or zero
+barcodes per cell at the time of transduction. The probability of
+barcode integration can be modeled as a Poisson distribution (8, 9).&#160;<a href=#fnref:50 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:51><p>Ensure proper controls for flow. Minimally have a positive
+control expressing BFP and a negative control expressing no
+fluorescent proteins.&#160;<a href=#fnref:51 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:52><p>When sorting for sgRNA barcoded cells, use more stringent gating
+than used for titer determination. Ensure that 0% of negative
+control samples appear in the sorting gate.&#160;<a href=#fnref:52 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:53><p>It is important to ensure that you have enough cells to
+sufficiently sample your population depending upon the initial
+barcode diversity.&#160;<a href=#fnref:53 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:54><p>Choose Illumina i7 index <u>NNNNNN</u> based on Illumina
+sequencer to be used and avoid using the same i7 index for different
+samples.&#160;<a href=#fnref:54 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:55><p>DNA amount used will be dependent on the nature of the cell
+population and desired sampling depth. To capture rare events, a
+maximum of 2 $\mu$g of DNA per reaction can be used and multiple
+reactions can be done. Given that a single diploid human genome is
+estimated at ~6.6 pg, 2 $\mu$g of genomic DNA represents that of
+~300,000 cells. To capture only highly represented clonal
+populations, less DNA can be used.&#160;<a href=#fnref:55 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:56><p>Pre-heat thermocycler to 98 °C before adding tubes to heat block.&#160;<a href=#fnref:56 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:57><p>The barcode sequence should be ordered to match the extracted
+barcode for the fragments labeled as ‘extraction’ and in
+reverse-complement for oligos labeled as ‘reversed’.&#160;<a href=#fnref:57 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:58><p>This process anneals the single stranded DNA oligos together,
+creating short double stranded DNA blocks that will be ligated
+together in the next step.&#160;<a href=#fnref:58 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:59><p>See
+<a href=https://www.addgene.org/protocols/bacterial-transformation/>addgene</a>
+for protocol.&#160;<a href=#fnref:59 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:60><p>Lipofectamine effiency can vary significantly between cell lines.
+It’s recommended you optimize transfection with a plasmid containing
+a constitutively promoter.&#160;<a href=#fnref:60 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:61><p>This protocol is optimized for adherent cell lines. If using
+suspension lines, electroporation can be done to introduce the
+plasmids to your cells. Be sure to optimize electroporation
+parameters on your cells for maximized plasmid expression and
+minimized cell death before recall electroporation. If
+electroporating, total plasmid load per cell may vary by cell type.
+Example: CD8 T cells respond well to 2.5 $\mu$g of each plasmid (5
+$\mu$g total DNA load) per 5 x 10<sup>5</sup> cells.&#160;<a href=#fnref:61 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:62><p>Slowly dilute Lipofectamine<sup>TM</sup> complexes dropwise with
+Opti-MEM<sup>TM</sup> media with occasional flicking of the tube.&#160;<a href=#fnref:62 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:63><p>EDTA and FBS in FACS buffer help to prevent cell clumping. For
+extra-sticky cells, use 5 mM EDTA in FACS buffer.&#160;<a href=#fnref:63 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:64><p>Ensure proper controls for flow. Minimally have a positive
+control singularly positive for BFP, a positive control singularly
+positive for GFP, and a negative control expressing no fluorescent
+proteins.&#160;<a href=#fnref:64 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:65><p>When sorting for recalled cells, use stringent gating. Ensure
+that 0% of negative control and single positive samples appear in
+the sorting gate.&#160;<a href=#fnref:65 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:66><p>Single cell sorting can be performed for isolation and growth of
+clonal populations.&#160;<a href=#fnref:66 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:67><p>DNA amount used will be dependent on the nature of the cell
+population and desired sampling depth. To capture rare events, a
+maximum of 2 $\mu$g of DNA per reaction can be used and multiple
+reactions can be done. Given that a single diploid human genome is
+estimated at ~6.6 pg, 2 $\mu$g of genomic DNA represents that of
+~300,000 cells. To capture only highly represented clonal
+populations, less DNA can be used.&#160;<a href=#fnref:67 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></article><footer class=book-footer><div class="flex flex-wrap justify-between"></div><script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script><hr>Revision: 2022.09.04-9fb808a</footer><label for=menu-control class="hidden book-menu-overlay"></label></div><aside class=book-toc><div class=book-toc-content><nav id=TableOfContents><ul><li><a href=#introduction>Introduction</a></li><li><a href=#materials>Materials</a></li><li><a href=#methods>Methods</a><ul><li><a href=#sgrna-barcode-library-plasmid-pool-assembly>sgRNA Barcode Library Plasmid Pool Assembly</a></li><li><a href=#sgrna-barcode-sampling>sgRNA Barcode Sampling</a></li><li><a href=#sgrna-barcoding-lentivirus-production>SgRNA Barcoding Lentivirus Production</a></li><li><a href=#determine-sgrna-viral-titer>Determine sgRNA Viral Titer</a><ul><li><a href=#titering-on-adherent-cells-forward-procedure>Titering on Adherent Cells (Forward Procedure)</a></li><li><a href=#titering-on-suspension-cells>Titering on Suspension Cells</a></li><li><a href=#flow-cytometry-to-determine-viral-titer>Flow Cytometry to Determine Viral Titer</a></li></ul></li><li><a href=#sgrna-barcode-transduction>sgRNA Barcode Transduction</a></li><li><a href=#targeted-sgrna-barcode-sampling-of-cells>Targeted sgRNA Barcode Sampling of Cells</a><ul><li><a href=#preparing-samples-for-sequencing>Preparing Samples for Sequencing</a></li><li><a href=#processing-barcode-sequencing-data-wip>Processing Barcode Sequencing Data (<em>WIP!</em>)</a></li></ul></li><li><a href=#recall-plasmid-assembly>Recall Plasmid Assembly</a></li><li><a href=#recall-and-isolation-of-barcoded-lineages>Recall and Isolation of Barcoded Lineages</a></li><li><a href=#10x-capture-variation>10X Capture Variation</a></li></ul></li><li><a href=#acknowledgements>Acknowledgements</a></li></ul></nav></div></aside></main></body></html>
