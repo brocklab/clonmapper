@@ -1,7 +1,7 @@
 pdf-engine: lualatex
 toc: true
 template: eisvogel.tex
-bibliography: bib/protocol.bib
+bibliography: data/bib/protocol.bib
 include-in-header:
  - tex/preamble.tex
 include-before-body:

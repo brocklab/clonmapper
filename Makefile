@@ -8,7 +8,7 @@ ifneq ($(DOCKER),true)
 	PANDOC_CMD := pandoc
 	MKDOCS_CMD := cd docs && $(VENV)/bin/mkdocs
 else
-	PANDOC_CMD := $(DOCKER_RUN) -v "$$(pwd)":/data $$(docker build -q .) pandoc
+	PANDOC_CMD := $(DOCKER_RUN) $$(docker build -q .) pandoc
 	MKDOCS_CMD := $(DOCKER_RUN) --network host \
 		--entrypoint ./scripts/run-mkdocs \
 		$$(docker build -q .)
@@ -37,7 +37,7 @@ p pdf: $(PDF) ## generate the pdf
 protocol.tex: .FORCE
 	$(PANDOC_CMD) $(LATEX_FLAGS) --output $@ $(LATEX_MDs)
 
-$(PDF): $(TEMPLATE) $(LATEX_MDs) $(LATEX_TABLES)
+$(PDF): $(LATEX_MDs) $(LATEX_TABLES) data/meta/general.yml data/meta/latex.yml
 	$(call log,Generating PDF)
 	$(PANDOC_CMD) $(LATEX_FLAGS) --output $@ $(LATEX_MDs)
 
@@ -46,19 +46,19 @@ md/html-tables.md: tables/oligos.csv tables/reagents.csv scripts/csv2mdtable
 	@scripts/csv2mdtable tables/oligos.csv -t "Oligonucleotides" --fmt 'l,l,l' >> $@
 	@scripts/csv2mdtable tables/reagents.csv -t "Recommended Reagents" --fmt 'l,c,c' >> $@
 
-docs/docs/protocol.md: $(HTML_MDs) scripts/pre-mkdocs-sanitize
+website/docs/protocol.md: $(HTML_MDs) scripts/pre-mkdocs-sanitize
 	@printf -- '---\nhide:\n  - navigation\n---\n' > $@
 	@cat $(HTML_MDs) | scripts/pre-mkdocs-sanitize >> $@
 
-LATEST_PDF := docs/docs/pdf/latest/$(PDF)
+LATEST_PDF := website/docs/pdf/latest/$(PDF)
 $(LATEST_PDF): $(PDF)
-	@rm -f docs/docs/pdf/latest/*
+	@rm -f website/docs/pdf/latest/*
 	@cp $< $@
 
 .PHONY: docs.build docs.content docs.serve
 ## docs.* |> docs.{content,serve,build}
 ### content -> generate website content |> --align sep
-docs.content: $(LATEST_PDF) docs/docs/protocol.md
+docs.content: $(LATEST_PDF) website/docs/protocol.md
 	$(call log,Generating Website Content)
 
 ### serve -> run the mkdocs live server |> --align sep
@@ -88,7 +88,7 @@ tex/reagents.tex: tables/reagents.csv scripts/csv2longtable
 		--fmt 'lcc'
 
 .PHONY: clean.site clean.paper
-## c, clean |> clean.{paper,docs} 
+## c, clean |> clean.{paper,docs}
 ### paper -> remove paper outputs |> --align sep
 ### docs -> remove mkdocs outputs |> --align sep
 c clean: clean.paper clean.docs
@@ -101,10 +101,10 @@ clean.paper:
 			public/*
 
 clean.docs:
-	@rm -f $(patsubst md/%,docs/docs/protocol/%, $(HTML_MDs)) \
-			docs/docs/full-protocol.md \
-			docs/docs/pdf/latest/*.pdf
-	@rm -rf docs/site
+	@rm -f $(patsubst md/%,website/docs/protocol/%, $(HTML_MDs)) \
+			website/docs/full-protocol.md \
+			website/docs/pdf/latest/*.pdf
+	@rm -rf website/site
 
 bootstrap: ## setup venv for mkdocs
 	@python3 -m venv $(VENV) --clear

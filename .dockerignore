@@ -1,4 +1,4 @@
 *
 !/flake.nix
 !/flake.lock
-!/docs/requirements.txt
+!/website/requirements.txt

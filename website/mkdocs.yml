@@ -44,7 +44,7 @@ theme:
 plugins:
   - search
   - bibtex:
-      bib_file: "../bib/protocol.bib"
+      bib_file: "../data/bib/protocol.bib"
       footnote_format: "ref{number}"
 
 extra_css:

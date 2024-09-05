@@ -1,9 +1,9 @@
 # debian:unstable-20240211-slim
 FROM debian@sha256:2fc255e56e2fee2c7597883e3c835c330c3e71d9144675790a9f84eb2548fd57
 
-COPY docs/requirements.txt /tmp/requirements.txt
+COPY website/requirements.txt /tmp/requirements.txt
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
   git \
   python3-pip \

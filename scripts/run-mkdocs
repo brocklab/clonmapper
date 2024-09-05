@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-cd docs
+cd website
 mkdocs "$@"
