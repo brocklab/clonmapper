@@ -6,7 +6,7 @@ hooks:
 
 nav:
   - Home: "index.md"
-  - Protocol: "protocol.md" 
+  - Protocol: "protocol.md"
   - PDF: "pdf/latest"
   - Sequences: "sequences/index.md"
   - Resources: "resources.md"

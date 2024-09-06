@@ -16,7 +16,7 @@ hide:
 
 Thank you for your interest in the ClonMapper DNA barcoding system.
 
-To get started go to the [protocol](protocol.md) tab or the latest [PDF](./pdf/latest).
+To get started go to the [protocol](protocol.md) tab or the latest [PDF](/clonmapper/pdf/latest).
 
 For previous versions and revision history see the [changelog](changelog.md).
 

@@ -15,6 +15,6 @@ Related to this some of the more generalized procedures were moved to an appendi
 - Targeted barcode amplification changed to a two stage PCR in order to first amplify sequences from genomic DNA,
   then a second reaction to add unique dual indicies for multiplexing/illumina sequencing.
 
-## [2023.06.09-27effb6](../pdf/archive/clonmapper-protocol-2023.06.09-27effb6.pdf)
+## [2023.06.09-27effb6](./pdf/archive/clonmapper-protocol-2023.06.09-27effb6.pdf)
 
 
