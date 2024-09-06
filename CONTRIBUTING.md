@@ -60,7 +60,7 @@ make docs.server
 Note that the latest pdf as well as any actual protocol markdown's
 are auto-generated within the website docs and should not be edited by hand.
 Some of the syntax used with `pandoc` is first removed (see `./scripts/pre-mkdocs-sanitize`),
-as well as all the individual markdown's combined for the `./docs/docs/protocol.md`
+as well as all the individual markdown's combined for the `./website/docs/protocol.md`
 
 ## Updating Tables
 
@@ -78,5 +78,5 @@ Any new citations need to be added to the bibliography in `./bib`
 
 If there is a major change to the protocol such as to the vector design or sampling
 the previous version should be officially archived and listed as an entry in the [changelog](./docs/docs/changelog.md).
-Additionally, its PDF should be copied to `./docs/docs/pdf/archive/` and placed under version control.
+Additionally, its PDF should be copied to `./website/docs/pdf/archive/` and placed under version control.
 

@@ -108,7 +108,7 @@ clean.docs:
 
 bootstrap: ## setup venv for mkdocs
 	@python3 -m venv $(VENV) --clear
-	@$(VENV)/bin/pip install -r ./docs/requirements.txt
+	@$(VENV)/bin/pip install -r ./website/requirements.txt
 
 .PHONY: .FORCE
 .FORCE:
